@@ -11,7 +11,7 @@ export class Product {
   @Column('text')
   description: string;
 
-  @Column()
+  @Column({ name: 'stock_amount' })
   stockAmount: number;
 
   @Column('decimal')
