@@ -25,7 +25,17 @@ export class CategoriesController {
   @Get(':id')
   async getCategory(@Param('id') id: number, @Res() res: Response) {
     try {
-      const category = await this.categoryService.findOneById(id);
+      const category = await this.categoryService.findById(id);
+      return res.json(category);
+    } catch (error: unknown) {
+      return handleErrorResponse(error, res);
+    }
+  }
+
+  @Get(':id/products')
+  async getCategoryWithProducts(@Param('id') id: number, @Res() res: Response) {
+    try {
+      const category = await this.categoryService.findByIdWithProducts(id);
       return res.json(category);
     } catch (error: unknown) {
       return handleErrorResponse(error, res);
@@ -49,7 +59,7 @@ export class CategoriesController {
     @Res() res: Response,
   ) {
     try {
-      const category = await this.categoryService.findOneById(id);
+      const category = await this.categoryService.findById(id);
       const updatedCategory = await this.categoryService.update(
         category,
         categoryDto,
@@ -63,7 +73,7 @@ export class CategoriesController {
   @Delete(':id')
   async deleteProduct(@Param('id') id: number, @Res() res: Response) {
     try {
-      const category = await this.categoryService.findOneById(id);
+      const category = await this.categoryService.findById(id);
       await this.categoryService.delete(category);
       return res.json({ message: 'Category deleted successfully' });
     } catch (error: unknown) {
