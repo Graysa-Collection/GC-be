@@ -20,8 +20,21 @@ export class CategoriesService {
     return this.categoryRepository.find();
   }
 
-  async findOneById(id: number): Promise<Category> {
+  async findById(id: number): Promise<Category> {
     const category = await this.categoryRepository.findOneBy({ id });
+    if (!category) {
+      throw new NotFoundException('Category not found');
+    }
+    return category;
+  }
+
+  async findByIdWithProducts(id: number): Promise<Category> {
+    const category = await this.categoryRepository.findOne({
+      where: { id },
+      relations: {
+        products: true,
+      },
+    });
     if (!category) {
       throw new NotFoundException('Category not found');
     }
@@ -43,7 +56,7 @@ export class CategoriesService {
   }
 
   delete(category: Category): Promise<DeleteResult> {
-    return this.categoryRepository.delete(category);
+    return this.categoryRepository.delete({ id: category.id });
   }
 
   validateCategoryDto(categoryDto: CategoryDto): void {

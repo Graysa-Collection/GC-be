@@ -8,12 +8,15 @@ import { Product } from './product.entity';
 import { DeleteResult, Repository } from 'typeorm';
 import { ProductDto } from './product.dto';
 import { validate } from '@/utils/validator';
+import { CategoriesService } from '@/categories/categories.service';
+import { Category } from '@/categories/category.entity';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+    private readonly categoryService: CategoriesService,
   ) {}
 
   findAll(): Promise<Product[]> {
@@ -21,38 +24,61 @@ export class ProductsService {
   }
 
   async findById(id: number): Promise<Product> {
-    const product = await this.productRepository.findOneBy({ id });
+    const product = await this.productRepository.findOne({
+      where: {
+        id,
+      },
+      relations: {
+        categories: true,
+      },
+    });
+
     if (!product) {
       throw new NotFoundException('Product not found');
     }
     return product;
   }
 
-  create(productDto: ProductDto): Promise<Product> {
+  async create(productDto: ProductDto): Promise<Product> {
     this.validateProductDto(productDto);
+
+    const categories = await this.getProductCategories(productDto.categories);
 
     const product = new Product();
     product.title = productDto.title;
     product.description = productDto.description;
     product.stockAmount = productDto.stockAmount;
     product.price = productDto.price;
+    product.categories = categories;
 
     return this.productRepository.save(product);
   }
 
-  update(product: Product, productDto: ProductDto): Promise<Product> {
+  async update(product: Product, productDto: ProductDto): Promise<Product> {
     this.validateProductDto(productDto);
+
+    const categories = await this.getProductCategories(productDto.categories);
 
     product.title = productDto.title;
     product.description = productDto.description;
     product.stockAmount = productDto.stockAmount;
     product.price = productDto.price;
+    product.categories = categories;
 
     return this.productRepository.save(product);
   }
 
   delete(product: Product): Promise<DeleteResult> {
-    return this.productRepository.delete(product);
+    return this.productRepository.delete({ id: product.id });
+  }
+
+  async getProductCategories(categoryIds: number[]) {
+    const categories: Category[] = [];
+    for (let i = 0; i < categoryIds.length; i++) {
+      const category = await this.categoryService.findById(categoryIds[i]);
+      categories.push(category);
+    }
+    return categories;
   }
 
   validateProductDto(productDto: ProductDto): void {
