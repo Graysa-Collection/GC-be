@@ -1,15 +1,16 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
-  HttpStatus,
   Param,
   Post,
+  Put,
   Res,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { Response } from 'express';
-import { CreateProductDto } from './create-product.dto';
+import { ProductDto } from './product.dto';
 import { handleErrorResponse } from '@/utils/handleErrorResponse';
 
 @Controller('products')
@@ -23,25 +24,48 @@ export class ProductsController {
 
   @Get(':id')
   async getProductById(@Param('id') id: number, @Res() res: Response) {
-    const product = await this.productsService.findById(id);
-
-    if (!product) {
-      return res
-        .status(HttpStatus.NOT_FOUND)
-        .json({ message: 'Product not found' });
+    try {
+      const product = await this.productsService.findById(id);
+      return res.json(product);
+    } catch (error: unknown) {
+      return handleErrorResponse(error, res);
     }
-
-    return res.json(product);
   }
 
   @Post()
-  async createProduct(
-    @Body() createProductDto: CreateProductDto,
+  async createProduct(@Body() productDto: ProductDto, @Res() res: Response) {
+    try {
+      const product = await this.productsService.create(productDto);
+      return res.json(product);
+    } catch (error: unknown) {
+      return handleErrorResponse(error, res);
+    }
+  }
+
+  @Put(':id')
+  async updateProduct(
+    @Param('id') id: number,
+    @Body() productDto: ProductDto,
     @Res() res: Response,
   ) {
     try {
-      const product = await this.productsService.create(createProductDto);
-      return res.json(product);
+      const product = await this.productsService.findById(id);
+      const createdProduct = await this.productsService.update(
+        product,
+        productDto,
+      );
+      return res.json(createdProduct);
+    } catch (error: unknown) {
+      return handleErrorResponse(error, res);
+    }
+  }
+
+  @Delete(':id')
+  async deleteProduct(@Param('id') id: number, @Res() res: Response) {
+    try {
+      const product = await this.productsService.findById(id);
+      await this.productsService.delete(product);
+      return res.json({ message: 'Product deleted successfully' });
     } catch (error: unknown) {
       return handleErrorResponse(error, res);
     }

@@ -1,8 +1,12 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './product.entity';
-import { Repository } from 'typeorm';
-import { CreateProductDto } from './create-product.dto';
+import { DeleteResult, Repository } from 'typeorm';
+import { ProductDto } from './product.dto';
 import { validate } from '@/utils/validator';
 
 @Injectable()
@@ -16,41 +20,59 @@ export class ProductsService {
     return this.productRepository.find();
   }
 
-  findById(id: number): Promise<Product> {
-    return this.productRepository.findOneBy({ id });
+  async findById(id: number): Promise<Product> {
+    const product = await this.productRepository.findOneBy({ id });
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+    return product;
   }
 
-  create(createProductDto: CreateProductDto) {
-    this.validateCreateDto(createProductDto);
+  create(productDto: ProductDto): Promise<Product> {
+    this.validateProductDto(productDto);
+
     const product = new Product();
-    product.title = createProductDto.title;
-    product.description = createProductDto.description;
-    product.stockAmount = createProductDto.stockAmount;
-    product.price = createProductDto.price;
+    product.title = productDto.title;
+    product.description = productDto.description;
+    product.stockAmount = productDto.stockAmount;
+    product.price = productDto.price;
+
     return this.productRepository.save(product);
   }
 
-  validateCreateDto(createProductDto: CreateProductDto) {
+  update(product: Product, productDto: ProductDto): Promise<Product> {
+    this.validateProductDto(productDto);
+
+    product.title = productDto.title;
+    product.description = productDto.description;
+    product.stockAmount = productDto.stockAmount;
+    product.price = productDto.price;
+
+    return this.productRepository.save(product);
+  }
+
+  delete(product: Product): Promise<DeleteResult> {
+    return this.productRepository.delete(product);
+  }
+
+  validateProductDto(productDto: ProductDto): void {
     try {
-      validate(createProductDto.title).isString().isNotEmpty();
+      validate(productDto.title).isString().isNotEmpty();
     } catch (error: any) {
       throw new BadRequestException(`Title is ${error.message}`);
     }
     try {
-      validate(createProductDto.description).isNotEmpty();
+      validate(productDto.description).isNotEmpty();
     } catch (error: any) {
       throw new BadRequestException(`Description is ${error.message}`);
     }
     try {
-      validate(createProductDto.stockAmount)
-        .isNumber()
-        .isNotNegative()
-        .isNotEmpty();
+      validate(productDto.stockAmount).isNumber().isNotNegative().isNotEmpty();
     } catch (error: any) {
       throw new BadRequestException(`Stock amount is ${error.message}`);
     }
     try {
-      validate(createProductDto.price).isNumber().isNotNegative().isNotEmpty();
+      validate(productDto.price).isNumber().isNotNegative().isNotEmpty();
     } catch (error: any) {
       throw new BadRequestException(`Price is ${error.message}`);
     }
