@@ -10,12 +10,15 @@ import { ProductDto } from './product.dto';
 import { validate } from '@/utils/validator';
 import { CategoriesService } from '@/categories/categories.service';
 import { Category } from '@/categories/category.entity';
+import { ProductImage } from './product-images.entity';
+import { ProductImageService } from './product-images.service';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+    private readonly productImagesService: ProductImageService,
     private readonly categoryService: CategoriesService,
   ) {}
 
@@ -30,6 +33,7 @@ export class ProductsService {
       },
       relations: {
         categories: true,
+        images: true,
       },
     });
 
@@ -72,13 +76,41 @@ export class ProductsService {
     return this.productRepository.delete({ id: product.id });
   }
 
-  async getProductCategories(categoryIds: number[]) {
+  async getProductCategories(categoryIds: number[]): Promise<Category[]> {
     const categories: Category[] = [];
     for (let i = 0; i < categoryIds.length; i++) {
       const category = await this.categoryService.findById(categoryIds[i]);
       categories.push(category);
     }
     return categories;
+  }
+
+  async saveImages(
+    images: Express.Multer.File[],
+    product: Product,
+  ): Promise<Product> {
+    const productImages: ProductImage[] = [];
+    for (let i = 0; i < images.length; i++) {
+      const image = images[i];
+      const productImage = new ProductImage();
+      productImage.imageUrl = image.path;
+      productImages.push(productImage);
+      await this.productImagesService.save(productImage);
+    }
+    product.images = product.images.concat(productImages);
+
+    return this.productRepository.save(product);
+  }
+
+  deleteImageWithId(imageId: string, product: Product): Promise<DeleteResult> {
+    const filterImages = product.images.filter(
+      (image) => image.id === Number(imageId),
+    );
+    if (filterImages.length < 1) {
+      throw new BadRequestException('Image does not exist');
+    }
+    const imageToBeDeleted = filterImages[0];
+    return this.productImagesService.delete(imageToBeDeleted);
   }
 
   validateProductDto(productDto: ProductDto): void {
@@ -93,12 +125,18 @@ export class ProductsService {
       throw new BadRequestException(`Description is ${error.message}`);
     }
     try {
-      validate(productDto.stockAmount).isNumber().isNotNegative().isNotEmpty();
+      validate(Number(productDto.stockAmount))
+        .isNumber()
+        .isNotNegative()
+        .isNotEmpty();
     } catch (error: any) {
       throw new BadRequestException(`Stock amount is ${error.message}`);
     }
     try {
-      validate(productDto.price).isNumber().isNotNegative().isNotEmpty();
+      validate(Number(productDto.price))
+        .isNumber()
+        .isNotNegative()
+        .isNotEmpty();
     } catch (error: any) {
       throw new BadRequestException(`Price is ${error.message}`);
     }
