@@ -1,9 +1,11 @@
 import { Category } from '@/categories/category.entity';
+import { ProductImage } from './product-images.entity';
 import {
   Column,
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -37,4 +39,7 @@ export class Product {
     },
   })
   categories: Category[];
+
+  @OneToMany(() => ProductImage, (image) => image.product)
+  images: ProductImage[];
 }
