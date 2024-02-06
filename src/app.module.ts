@@ -7,6 +7,7 @@ import { dbDataSource } from './data.source';
 import { CategoriesModule } from './categories/categories.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { ParentCategoriesModule } from './parent_categories/parent_categories.module';
 
 @Module({
   controllers: [AppController],
@@ -18,6 +19,7 @@ import { join } from 'path';
     TypeOrmModule.forRoot(dbDataSource),
     ProductsModule,
     CategoriesModule,
+    ParentCategoriesModule,
   ],
 })
 export class AppModule {}

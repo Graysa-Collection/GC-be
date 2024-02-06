@@ -8,12 +8,14 @@ import { Category } from './category.entity';
 import { DeleteResult, Repository } from 'typeorm';
 import { CategoryDto } from './category.dto';
 import { validate } from '@/utils/validator';
+import { ParentCategoriesService } from '@/parent_categories/parent_categories.service';
 
 @Injectable()
 export class CategoriesService {
   constructor(
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
+    private readonly parentCategoryService: ParentCategoriesService,
   ) {}
 
   findAll(): Promise<Category[]> {
@@ -41,17 +43,33 @@ export class CategoriesService {
     return category;
   }
 
-  create(categoryDto: CategoryDto): Promise<Category> {
+  async create(categoryDto: CategoryDto): Promise<Category> {
     this.validateCategoryDto(categoryDto);
+
+    const parentCategory = await this.parentCategoryService.findById(
+      categoryDto.parentCategoryId,
+    );
 
     const category = new Category();
     category.name = categoryDto.name;
+    category.parentCategory = parentCategory;
+
     return this.categoryRepository.save(category);
   }
 
-  update(category: Category, categoryDto: CategoryDto): Promise<Category> {
+  async update(
+    category: Category,
+    categoryDto: CategoryDto,
+  ): Promise<Category> {
     this.validateCategoryDto(categoryDto);
+
+    const parentCategory = await this.parentCategoryService.findById(
+      categoryDto.parentCategoryId,
+    );
+
     category.name = categoryDto.name;
+    category.parentCategory = parentCategory;
+
     return this.categoryRepository.save(category);
   }
 
