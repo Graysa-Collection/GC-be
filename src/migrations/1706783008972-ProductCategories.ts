@@ -4,8 +4,8 @@ export class ProductCategories1706783008972 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
       `CREATE TABLE product_categories (
-        product_id INT,
-        category_id INT,
+        product_id INT NOT NULL,
+        category_id INT NOT NULL,
         PRIMARY KEY(product_id, category_id),
         CONSTRAINT fk_product_id
           FOREIGN KEY(product_id)

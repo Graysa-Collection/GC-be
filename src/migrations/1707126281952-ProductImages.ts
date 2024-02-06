@@ -6,7 +6,7 @@ export class ProductImages1707126281952 implements MigrationInterface {
       `CREATE TABLE product_images (
         id serial PRIMARY KEY,
         image_url VARCHAR(300) NOT NULL,
-        product_id INT,
+        product_id INT NOT NULL,
         CONSTRAINT fk_product_id
           FOREIGN KEY (product_id)
             REFERENCES products(id)
