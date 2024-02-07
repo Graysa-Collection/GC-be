@@ -77,7 +77,7 @@ export class CategoriesService {
     return this.categoryRepository.delete({ id: category.id });
   }
 
-  validateCategoryDto(categoryDto: CategoryDto): void {
+  private validateCategoryDto(categoryDto: CategoryDto): void {
     try {
       validate(categoryDto.name).isString().isNotEmpty();
     } catch (error: any) {

@@ -113,7 +113,7 @@ export class ProductsService {
     return this.productImagesService.delete(imageToBeDeleted);
   }
 
-  validateProductDto(productDto: ProductDto): void {
+  private validateProductDto(productDto: ProductDto): void {
     try {
       validate(productDto.title).isString().isNotEmpty();
     } catch (error: any) {

@@ -8,6 +8,8 @@ import { CategoriesModule } from './categories/categories.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ParentCategoriesModule } from './parent_categories/parent_categories.module';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   controllers: [AppController],
@@ -20,6 +22,8 @@ import { ParentCategoriesModule } from './parent_categories/parent_categories.mo
     ProductsModule,
     CategoriesModule,
     ParentCategoriesModule,
+    AuthModule,
+    UsersModule,
   ],
 })
 export class AppModule {}
