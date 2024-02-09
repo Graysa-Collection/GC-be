@@ -7,11 +7,11 @@ import { User } from './users/user.entity';
 
 export const dbDataSource: DataSourceOptions = {
   type: 'postgres',
-  host: 'localhost',
-  port: 5432,
-  username: 'postgres',
-  password: 'postgres',
-  database: 'graysa',
+  host: process.env.DATABASE_HOST,
+  port: +process.env.DATABASE_PORT,
+  username: process.env.DATABASE_USERNAME,
+  password: process.env.DATABASE_PASSWORD,
+  database: process.env.DATABASE_NAME,
   entities: [Product, Category, ProductImage, ParentCategory, User],
   migrations: ['dist/migrations/*.js'],
   synchronize: false,
