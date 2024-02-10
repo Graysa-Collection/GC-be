@@ -19,7 +19,9 @@ import { dbDataSource } from './data.source';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),
     }),
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot(dbDataSource),
     ProductsModule,
     CategoriesModule,

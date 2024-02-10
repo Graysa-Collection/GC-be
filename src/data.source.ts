@@ -4,6 +4,9 @@ import { Category } from './categories/category.entity';
 import { ProductImage } from './products/product-images.entity';
 import { ParentCategory } from './parent_categories/parent_categories.entity';
 import { User } from './users/user.entity';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 export const dbDataSource: DataSourceOptions = {
   type: 'postgres',
