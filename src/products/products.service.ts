@@ -97,7 +97,12 @@ export class ProductsService {
       productImages.push(productImage);
       await this.productImagesService.save(productImage);
     }
-    product.images = product.images.concat(productImages);
+
+    if (product.images) {
+      product.images = product.images.concat(productImages);
+    } else {
+      product.images = productImages;
+    }
 
     return this.productRepository.save(product);
   }

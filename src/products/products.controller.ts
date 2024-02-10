@@ -15,17 +15,22 @@ import { Response } from 'express';
 import { ProductDto } from './product.dto';
 import { handleErrorResponse } from '@/utils/handleErrorResponse';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { Role } from '@/roles/roles.enum';
+import { Public } from '@/auth/public.decorator';
+import { Auth } from '@/auth/auth.decorator';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Get()
+  @Public()
   getProducts() {
     return this.productsService.findAll();
   }
 
   @Get(':id')
+  @Public()
   async getProductById(@Param('id') id: number, @Res() res: Response) {
     try {
       const product = await this.productsService.findById(id);
@@ -36,6 +41,7 @@ export class ProductsController {
   }
 
   @Post()
+  @Auth([Role.ADMIN])
   @UseInterceptors(FilesInterceptor('images'))
   async createProduct(
     @Body() productDto: ProductDto,
@@ -55,6 +61,7 @@ export class ProductsController {
   }
 
   @Put(':id')
+  @Auth([Role.ADMIN])
   @UseInterceptors(FilesInterceptor('images'))
   async updateProduct(
     @Param('id') id: number,
@@ -79,6 +86,7 @@ export class ProductsController {
   }
 
   @Delete(':id')
+  @Auth([Role.ADMIN])
   async deleteProduct(@Param('id') id: number, @Res() res: Response) {
     try {
       const product = await this.productsService.findById(id);
@@ -90,6 +98,7 @@ export class ProductsController {
   }
 
   @Delete(':id/image/:imageId')
+  @Auth([Role.ADMIN])
   async deleteProductImage(
     @Param('id') id: number,
     @Param('imageId') imageId: string,

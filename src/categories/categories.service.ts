@@ -19,7 +19,11 @@ export class CategoriesService {
   ) {}
 
   findAll(): Promise<Category[]> {
-    return this.categoryRepository.find();
+    return this.categoryRepository.find({
+      relations: {
+        parentCategory: true,
+      },
+    });
   }
 
   async findById(id: number): Promise<Category> {

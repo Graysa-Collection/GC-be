@@ -12,17 +12,22 @@ import { CategoriesService } from './categories.service';
 import { CategoryDto } from './category.dto';
 import { handleErrorResponse } from '@/utils/handleErrorResponse';
 import { Response } from 'express';
+import { Public } from '@/auth/public.decorator';
+import { Auth } from '@/auth/auth.decorator';
+import { Role } from '@/roles/roles.enum';
 
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoryService: CategoriesService) {}
 
   @Get()
+  @Public()
   getAllCategories() {
     return this.categoryService.findAll();
   }
 
   @Get(':id')
+  @Public()
   async getCategory(@Param('id') id: number, @Res() res: Response) {
     try {
       const category = await this.categoryService.findById(id);
@@ -33,6 +38,7 @@ export class CategoriesController {
   }
 
   @Get(':id/products')
+  @Public()
   async getCategoryWithProducts(@Param('id') id: number, @Res() res: Response) {
     try {
       const category = await this.categoryService.findByIdWithProducts(id);
@@ -43,6 +49,7 @@ export class CategoriesController {
   }
 
   @Post()
+  @Auth([Role.ADMIN])
   async createCategory(@Body() categoryDto: CategoryDto, @Res() res: Response) {
     try {
       const category = await this.categoryService.create(categoryDto);
@@ -53,6 +60,7 @@ export class CategoriesController {
   }
 
   @Put(':id')
+  @Auth([Role.ADMIN])
   async updateCategory(
     @Param('id') id: number,
     @Body() categoryDto: CategoryDto,
@@ -71,6 +79,7 @@ export class CategoriesController {
   }
 
   @Delete(':id')
+  @Auth([Role.ADMIN])
   async deleteProduct(@Param('id') id: number, @Res() res: Response) {
     try {
       const category = await this.categoryService.findById(id);
