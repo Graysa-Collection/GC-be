@@ -5,7 +5,7 @@ import { Role } from './roles.enum';
 import { Request } from 'express';
 import { User } from '@/users/user.entity';
 
-interface IRequestWithUser extends Request {
+export interface IRequestWithUser extends Request {
   user: User;
 }
 

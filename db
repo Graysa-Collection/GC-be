@@ -14,10 +14,28 @@ function dropDb() {
   echo "Database dropped"
 }
 
+function createMigration() {
+  npx typeorm migration:create src/migrations/$1
+}
+
+function runMigration() {
+  npm run build && npx typeorm migration:run -d dist/data.source.js
+}
+
+function revertMigration() {
+  npm run build && npx typeorm migration:revert -d dist/data.source.js
+}
+
 if [[ $1 == "init" ]]; then
   initDb
 elif [[ $1 == "drop" ]]; then
   dropDb
+elif [[ $1 == "migration:create" ]]; then
+  createMigration $2
+elif [[ $1 == "migration:run" ]]; then
+  runMigration
+elif [[ $1 == "migration:revert" ]]; then
+  revertMigration
 else
   echo "Wrong option"
   exit 1
