@@ -11,6 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { dbDataSource } from './data.source';
+import { AddToCartModule } from './add-to-cart/add-to-cart.module';
 
 @Module({
   controllers: [AppController],
@@ -28,6 +29,7 @@ import { dbDataSource } from './data.source';
     ParentCategoriesModule,
     AuthModule,
     UsersModule,
+    AddToCartModule,
   ],
 })
 export class AppModule {}
