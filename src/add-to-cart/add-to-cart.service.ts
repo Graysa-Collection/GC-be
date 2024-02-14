@@ -6,9 +6,9 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { ProductsService } from '@/products/products.service';
-import { CartQuantityDto } from './cart-quantity.dto';
 import { validate } from '@/utils/validator';
 import { CartItem } from './cart-item.entity';
+import { ItemQuantityDto } from './item-quantity.dto';
 
 @Injectable()
 export class AddToCartService {
@@ -66,15 +66,15 @@ export class AddToCartService {
 
   updateProductQuantity(
     cartItem: CartItem,
-    cartQuantityDto: CartQuantityDto,
+    itemQuantityDto: ItemQuantityDto,
   ): Promise<CartItem> {
-    this.validateQuantityDto(cartQuantityDto);
+    this.validateQuantityDto(itemQuantityDto);
     this.checkIfQuantityInStock(
-      cartQuantityDto.quantity,
+      itemQuantityDto.quantity,
       cartItem.product.stockAmount,
     );
 
-    cartItem.quantity = cartQuantityDto.quantity;
+    cartItem.quantity = itemQuantityDto.quantity;
     return this.cartItemRepository.save(cartItem);
   }
 
@@ -97,9 +97,9 @@ export class AddToCartService {
     }
   }
 
-  private validateQuantityDto(cartQuantityDto: CartQuantityDto): void {
+  private validateQuantityDto(itemQuantityDto: ItemQuantityDto): void {
     try {
-      validate(cartQuantityDto.quantity).isNotEmpty().isNumber();
+      validate(itemQuantityDto.quantity).isNotEmpty().isNumber();
     } catch (error: any) {
       throw new BadRequestException(`Quantity is ${error.message}`);
     }
