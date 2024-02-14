@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  Res,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Put, Res } from '@nestjs/common';
 import { AddToCartService } from './add-to-cart.service';
 import { UserExtract } from '@/users/user.decorator';
 import { User } from '@/users/user.entity';
@@ -15,7 +6,8 @@ import { AddToCartDto } from './cart.dto';
 import { ProductsService } from '@/products/products.service';
 import { handleErrorResponse } from '@/utils/handleErrorResponse';
 import { Response } from 'express';
-import { CartQuantityDto } from './cart-quantity.dto';
+import { ItemQuantityDto } from './item-quantity.dto';
+import { DeleteItemDto } from './delete-item.dto';
 
 @Controller('add-to-cart')
 export class AddToCartController {
@@ -49,22 +41,21 @@ export class AddToCartController {
     }
   }
 
-  @Put('/update-quantity/:productId')
+  @Put('/update-quantity')
   async setProductAmount(
     @UserExtract() user: User,
-    @Param('productId') productId: number,
-    @Body() cartQuantityDto: CartQuantityDto,
+    @Body() itemQuantityDto: ItemQuantityDto,
     @Res() res: Response,
   ) {
     try {
       const cartItem = await this.aAddToCartService.findCartProduct(
         user.id,
-        productId,
+        itemQuantityDto.productId,
       );
       const updatedCartItem =
         await this.aAddToCartService.updateProductQuantity(
           cartItem,
-          cartQuantityDto,
+          itemQuantityDto,
         );
       return res.json(updatedCartItem);
     } catch (error: unknown) {
@@ -72,14 +63,17 @@ export class AddToCartController {
     }
   }
 
-  @Delete('/items/:productId')
+  @Delete('/items')
   async deleteCartItem(
     @UserExtract() user: User,
-    @Param('productId') productId: number,
+    @Body() deleteItemDto: DeleteItemDto,
     @Res() res: Response,
   ) {
     try {
-      await this.aAddToCartService.deleteCartItem(user.id, productId);
+      await this.aAddToCartService.deleteCartItem(
+        user.id,
+        deleteItemDto.productId,
+      );
       return res.json({ message: 'Cart item deleted successfully' });
     } catch (error: unknown) {
       return handleErrorResponse(error, res);
