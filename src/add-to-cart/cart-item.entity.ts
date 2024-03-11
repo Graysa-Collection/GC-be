@@ -19,6 +19,6 @@ export class CartItem {
   @JoinColumn({ name: 'product_id' })
   product: Product;
 
-  @Column({ name: 'quantity' })
+  @Column()
   quantity: number;
 }
