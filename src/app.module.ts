@@ -12,6 +12,8 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { dbDataSource } from './data.source';
 import { AddToCartModule } from './add-to-cart/add-to-cart.module';
+import { OrderModule } from './order/order.module';
+import { OrderedItemsModule } from './ordered-items/ordered-items.module';
 
 @Module({
   controllers: [AppController],
@@ -30,6 +32,8 @@ import { AddToCartModule } from './add-to-cart/add-to-cart.module';
     AuthModule,
     UsersModule,
     AddToCartModule,
+    OrderModule,
+    OrderedItemsModule,
   ],
 })
 export class AppModule {}

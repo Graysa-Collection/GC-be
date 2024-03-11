@@ -6,6 +6,8 @@ import { ParentCategory } from './parent_categories/parent_categories.entity';
 import { User } from './users/user.entity';
 import { CartItem } from './add-to-cart/cart-item.entity';
 import * as dotenv from 'dotenv';
+import { Order } from './order/order.entity';
+import { OrderedItem } from './ordered-items/ordered-items.entity';
 
 dotenv.config();
 
@@ -16,7 +18,16 @@ export const dbDataSource: DataSourceOptions = {
   username: process.env.DATABASE_USERNAME,
   password: process.env.DATABASE_PASSWORD,
   database: process.env.DATABASE_NAME,
-  entities: [Product, Category, ProductImage, ParentCategory, User, CartItem],
+  entities: [
+    Product,
+    Category,
+    ProductImage,
+    ParentCategory,
+    User,
+    CartItem,
+    Order,
+    OrderedItem,
+  ],
   migrations: ['dist/migrations/*.js'],
   synchronize: false,
 };
