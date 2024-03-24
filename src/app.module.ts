@@ -14,6 +14,7 @@ import { dbDataSource } from './data.source';
 import { AddToCartModule } from './add-to-cart/add-to-cart.module';
 import { OrderModule } from './order/order.module';
 import { OrderedItemsModule } from './ordered-items/ordered-items.module';
+import { NewArrivalsModule } from './new-arrivals/new-arrivals.module';
 
 @Module({
   controllers: [AppController],
@@ -34,6 +35,7 @@ import { OrderedItemsModule } from './ordered-items/ordered-items.module';
     AddToCartModule,
     OrderModule,
     OrderedItemsModule,
+    NewArrivalsModule,
   ],
 })
 export class AppModule {}
