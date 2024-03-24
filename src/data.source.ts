@@ -8,6 +8,7 @@ import { CartItem } from './add-to-cart/cart-item.entity';
 import * as dotenv from 'dotenv';
 import { Order } from './order/order.entity';
 import { OrderedItem } from './ordered-items/ordered-items.entity';
+import { NewArrival } from './new-arrivals/new-arrival.entity';
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ export const dbDataSource: DataSourceOptions = {
     CartItem,
     Order,
     OrderedItem,
+    NewArrival,
   ],
   migrations: ['dist/migrations/*.js'],
   synchronize: false,
