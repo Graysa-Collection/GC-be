@@ -9,6 +9,7 @@ import * as dotenv from 'dotenv';
 import { Order } from './order/order.entity';
 import { OrderedItem } from './ordered-items/ordered-items.entity';
 import { NewArrival } from './new-arrivals/new-arrival.entity';
+import { ContactUs } from './contact-us/contact-us.entity';
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ export const dbDataSource: DataSourceOptions = {
     Order,
     OrderedItem,
     NewArrival,
+    ContactUs,
   ],
   migrations: ['dist/migrations/*.js'],
   synchronize: false,

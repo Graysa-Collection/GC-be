@@ -15,6 +15,7 @@ import { AddToCartModule } from './add-to-cart/add-to-cart.module';
 import { OrderModule } from './order/order.module';
 import { OrderedItemsModule } from './ordered-items/ordered-items.module';
 import { NewArrivalsModule } from './new-arrivals/new-arrivals.module';
+import { ContactUsModule } from './contact-us/contact-us.module';
 
 @Module({
   controllers: [AppController],
@@ -36,6 +37,7 @@ import { NewArrivalsModule } from './new-arrivals/new-arrivals.module';
     OrderModule,
     OrderedItemsModule,
     NewArrivalsModule,
+    ContactUsModule,
   ],
 })
 export class AppModule {}
