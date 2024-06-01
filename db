@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 
+# This script is used to manage the database
+# Usage: ./db [init|drop|migration:create|migration:run|migration:revert]
+#
+# Examples:
+#   ./db init - initialize the database
+#   ./db drop - drop the database
+#   ./db migration:create - create a new migration
+#   ./db migration:run - run the migrations
+#   ./db migration:revert - revert the migrations
+
 source .env
 
 function initDb() {
