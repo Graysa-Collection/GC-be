@@ -26,11 +26,20 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Pre-requisites
+1. `psql` cli
+2. unix shell (`git-bash` is an equivalent in windows)
+3. `nest` cli
+
 ## Installation
 
+1. Copy contents of `.env.example` to `.env` file
 ```bash
 $ yarn install
 ```
+
+## Handling the database
+Check `db` file in the root directory for example commands
 
 ## Running the app
 

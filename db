@@ -6,7 +6,7 @@
 # Examples:
 #   ./db init - initialize the database
 #   ./db drop - drop the database
-#   ./db migration:create - create a new migration
+#   ./db migration:create $name_of_migration - create a new migration
 #   ./db migration:run - run the migrations
 #   ./db migration:revert - revert the migrations
 
